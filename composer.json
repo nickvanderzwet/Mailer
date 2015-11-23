@@ -1,0 +1,16 @@
+{
+    "name": "ronrademaker/mailer",
+    "description": "Wrapper around Swiftmailer",
+    "type": "library",
+    "require": {
+        "swiftmailer/swiftmailer": "^5.4",
+        "twig/twig": "^1.23"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ron Rademaker",
+            "email": "ron@connectholland.nl"
+        }
+    ]
+}
