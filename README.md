@@ -1,0 +1,2 @@
+# Mailer
+Wrapper around Swiftmail
