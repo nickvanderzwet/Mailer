@@ -128,7 +128,4 @@ class Mailer
         $this->message->setBody($this->template->renderBlock('body_text', $arguments), 'text/plain');
         $this->message->addPart($this->template->renderBlock('body_html', $arguments), 'text/html');
     }
-
-
-
 }
