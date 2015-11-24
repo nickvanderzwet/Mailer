@@ -1,8 +1,10 @@
 <?php
 namespace RonRademaker\Mailer;
 
+use Swift_Mailer;
 use Swift_Message;
 use Twig_Environment;
+use Twig_TemplateInterface;
 
 /**
  * Mailer service wrapper around Swiftmailer using Twig

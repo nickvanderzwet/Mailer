@@ -5,7 +5,8 @@
     "require": {
         "swiftmailer/swiftmailer": "^5.4",
         "twig/twig": "^1.23",
-        "phpunit/phpunit": "^4.7"
+        "phpunit/phpunit": "^4.7",
+        "Mockery/Mockery": "^0.9.4"
     },
     "license": "MIT",
     "authors": [
@@ -13,5 +14,15 @@
             "name": "Ron Rademaker",
             "email": "ron@connectholland.nl"
         }
-    ]
+    ],
+    "autoload": {
+        "classmap": [
+            "src/"
+        ]
+    },
+    "autoload-dev": {
+        "classmap": [
+            "test/"
+        ]
+    }
 }
