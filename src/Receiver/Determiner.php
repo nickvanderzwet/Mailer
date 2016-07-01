@@ -2,9 +2,6 @@
 
 namespace RonRademaker\Mailer\Receiver;
 
-use WMFunctionLibrary;
-use WMMongoDBRef;
-
 /**
  * The determiner class is used to determine the receivers of a confirmation.
  *
@@ -25,6 +22,71 @@ class Determiner implements DeterminerInterface
      * @var array<DeterminerInterface>
      **/
     protected $determiners = array();
+
+    /**
+     * The fieldGetters is description.
+     *
+     * @var array<FieldGetterInterface>
+     */
+    private $fieldGetters = [];
+
+    /**
+     * Creates a new Determiner.
+     */
+    public function __construct()
+    {
+        $this->addFieldGetter(new FieldGetter());
+    }
+
+    /**
+     * Getter for the fieldGetters.
+     *
+     * @return array<FieldGetterInterface>
+     */
+    public function getFieldGetters()
+    {
+        return $this->fieldGetters;
+    }
+
+    /**
+     * Setter for the fieldGetters.
+     *
+     * @param  array<FieldGetterInterface> fieldGetters
+     */
+    public function setFieldGetters(array $fieldGetters)
+    {
+        $this->fieldGetters = $fieldGetters;
+
+        return $this;
+    }
+
+    /**
+     * Adds a field getter.
+     *
+     * @param FieldGetterInterface $fieldGetter
+     *
+     * @return Determiner
+     */
+    public function addFieldGetter(FieldGetterInterface $fieldGetter)
+    {
+        array_unshift($this->fieldGetters, $fieldGetter);
+
+        return $this;
+    }
+
+    /**
+     * Removes a field getter.
+     *
+     * @param FieldGetterInterface $fieldGetter
+     *
+     * @return Determiner
+     */
+    public function removeFieldGetter(FieldGetterInterface $fieldGetter)
+    {
+        $this->fieldGetters = array_filter($this->fieldGetters, function ($obj) use ($fieldGetter) {
+            return !($fieldGetter === $obj);
+        });
+    }
 
     /**
      * Returns the internal determiners.
@@ -175,20 +237,15 @@ class Determiner implements DeterminerInterface
      **/
     protected function retrievePossibleObjectValue($object, $getter)
     {
-        $object = $object->$getter();
-        if (class_exists('WMMongoDBRef') && WMMongoDBRef::isRef($object)) {
-            return WMMongoDBRef::getObject(null, $object);
+        foreach ($this->getFieldGetters() as $fieldGetter) {
+            if ($fieldGetter->handles($object, $getter)) {
+                return $fieldGetter->retrieveValue($object, $getter);
+            }
         }
-
-        return $object;
     }
 
     /**
-     * camelCase.
-     *
-     * camelCase function (This_is_a_string -> ThisIsAString; this_is_a_string -> ThisIsAString)
-     *
-     * @since Fri Nov 17 2006
+     * CamelCase function (This_is_a_string -> ThisIsAString; this_is_a_string -> ThisIsAString).
      *
      * @param string $string
      *

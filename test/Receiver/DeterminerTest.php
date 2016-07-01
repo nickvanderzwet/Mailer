@@ -77,12 +77,12 @@ class DeterminerTest extends PHPUnit_Framework_TestCase
     public function testGetHandler()
     {
         $object = new DeterminerTestObject();
-        $expected = 'RonRademaker\Mailer\Receiver\DeterminerInterface';
+        $expected = DeterminerInterface::class;
         $this->assertInstanceOf($expected, (new Determiner())->getHandler($object, null), sprintf('Asserting that the handler retrieved through Determiner::getHandler is of instance %s.', $expected));
     }
 }
 
-class DeterminerTestObject extends stdClass
+class DeterminerTestObject
 {
     /**
      * Creates a new DeterminerTestObject.

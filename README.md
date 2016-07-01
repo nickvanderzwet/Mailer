@@ -86,7 +86,7 @@ For instance from an object:
 ``` php
 $profile = new Profile();
 $profile->setEmail('foobarz@example.com');
-$profile->setFullname('Foo Barz');
+$profile->setFullName('Foo Barz');
 
 $emailConfiguration = ['email' => '{{email}}', 'name' => '{{full_name'}}];
 $determiner = new RonRademaker\Mailer\Receiver\Determiner();
@@ -98,11 +98,11 @@ Or an object with chained field configuration:
 ``` php
 $profile = new Profile();
 $profile->setEmail('foobarz@example.com');
-$profile->setFullname('Foo Barz');
+$profile->setFullName('Foo Barz');
 $company = new Company();
 $company->setContactperson($profile);
 
-$emailConfiguration = ['email' => '{{profile.email}}', 'name' => '{{profile.full_name'}}];
+$emailConfiguration = ['email' => '{{contactperson.email}}', 'name' => '{{contactperson.full_name'}}];
 $determiner = new RonRademaker\Mailer\Receiver\Determiner();
 $receiver = $determiner->getReceivers($company, null, $emailConfiguration);
 // results in ['email' => 'foobarz@example.com', 'name' => 'Foo Barz'];
@@ -115,7 +115,7 @@ Or just hardcoded settings:
 ``` php
 $emailConfiguration = ['email' => 'foobarz@example.com', 'name' => 'Foo Barz'];
 $determiner = new RonRademaker\Mailer\Receiver\Determiner();
-$receiver = $determiner->getReceivers($object, null, $emailConfiguration); 
+$receiver = $determiner->getReceivers($object, null, $emailConfiguration);
 // results in ['email' => 'foobarz@example.com', 'name' => 'Foo Barz'];
 ```
 
