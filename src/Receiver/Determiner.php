@@ -83,9 +83,11 @@ class Determiner implements DeterminerInterface
      */
     public function removeFieldGetter(FieldGetterInterface $fieldGetter)
     {
-        $this->fieldGetters = array_filter($this->fieldGetters, function ($obj) use ($fieldGetter) {
-            return !($fieldGetter === $obj);
+        $this->fieldGetters = array_filter($this->fieldGetters, function (FieldGetterInterface $compareFieldGetter) use ($fieldGetter) {
+            return !($fieldGetter === $compareFieldGetter);
         });
+
+        return $this;
     }
 
     /**
@@ -193,8 +195,8 @@ class Determiner implements DeterminerInterface
     protected function parseReceivers($object, array $receivers)
     {
         $parsedReceivers = array();
-        foreach ($receivers as $email => $name) {
-            $parsedReceivers[ $this->parseReceiverValue($object, $email) ] = $this->parseReceiverValue($object, $name);
+        foreach ($receivers as $field => $value) {
+            $parsedReceivers[$this->parseReceiverValue($object, $field)] = $this->parseReceiverValue($object, $value);
         }
 
         return array_filter($parsedReceivers);
@@ -238,7 +240,7 @@ class Determiner implements DeterminerInterface
     protected function retrievePossibleObjectValue($object, $getter)
     {
         foreach ($this->getFieldGetters() as $fieldGetter) {
-            if ($fieldGetter->handles($object, $getter)) {
+            if ($fieldGetter->handles($object, $getter) && false !== ($value = $fieldGetter->retrieveValue($object, $getter))) {
                 return $fieldGetter->retrieveValue($object, $getter);
             }
         }
