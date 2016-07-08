@@ -72,6 +72,38 @@ class DeterminerTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Tests that the configuration for the e-mail name and e-mail address are retrieved from the object in the 'email => name' format that Swift mailer expects.
+     */
+    public function testVariableTextReceiverWithoutArrayKeys()
+    {
+        $object = new DeterminerTestObject([
+            'email' => 'foo@example.com',
+            'fullName' => 'Foo Barz',
+            'object' => new DeterminerTestObject([
+                'email' => 'foo2@example.com',
+                'fullName' => 'Foo2 Barz',
+                'object' => new DeterminerTestObject([
+                    'email' => 'foo3@example.com',
+                    'fullName' => 'Foo3 Barz',
+                ]),
+            ]),
+        ]);
+
+        $receiverInput = [
+            '{{object.object.email}}' => '{{object.object.full_name}}',
+        ];
+
+        $receiver = (new Determiner())->getReceivers($object, null, $receiverInput);
+        $this->assertEquals(1, count($receiver), sprintf("Asserting that 1 receiver was parsed out input:\n%s", var_export($receiverInput, true)));
+        foreach ($receiver as $email => $name) {
+            $expected = 'foo3@example.com';
+            $this->assertEquals($expected, $email, sprintf("Asserting that the receiver email (%s) is retrieved from object when using email configuration:\n <email name='%s' email='%s'\\>\n", '{{object.object.email}}', '{{object.object.email}}', '{{object.object.name}}'));
+            $expected = 'Foo3 Barz';
+            $this->assertEquals($expected, $name, sprintf("Asserting that the receiver name (%s) is retrieved from object when using email configuration:\n <email name='%s' email='%s'\\>\n", '{{object.object.name}}', '{{object.object.email}}', '{{object.object.name}}'));
+        }
+    }
+
+    /**
      * Tests that that the handler retrieved through Determiner::getHandler is of instance DeterminerInterface.
      */
     public function testGetHandler()

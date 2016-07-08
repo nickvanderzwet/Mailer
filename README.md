@@ -88,10 +88,10 @@ $profile = new Profile();
 $profile->setEmail('foobarz@example.com');
 $profile->setFullName('Foo Barz');
 
-$emailConfiguration = ['email' => '{{email}}', 'name' => '{{full_name'}}];
+$emailConfiguration = ['{{email}}' => '{{full_name'}}];
 $determiner = new RonRademaker\Mailer\Receiver\Determiner();
 $receiver = $determiner->getReceivers($profile, null, $emailConfiguration);
-// results in ['email' => 'foobarz@example.com', 'name' => 'Foo Barz'];
+// results in ['foobarz@example.com' => 'Foo Barz'];
 ```
 Or an object with chained field configuration:
 
