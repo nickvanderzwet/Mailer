@@ -77,3 +77,45 @@ Create your message in $message and
 ```
 $mailer->sendMessage($message);
 ```
+
+## Retrieving receivers from objects
+
+It is possible to use a Determiner to retrieve the receivers (email/name) from an email configuration.
+For instance from an object:
+
+``` php
+$profile = new Profile();
+$profile->setEmail('foobarz@example.com');
+$profile->setFullName('Foo Barz');
+
+$emailConfiguration = ['{{email}}' => '{{full_name'}}];
+$determiner = new RonRademaker\Mailer\Receiver\Determiner();
+$receiver = $determiner->getReceivers($profile, null, $emailConfiguration);
+// results in ['foobarz@example.com' => 'Foo Barz'];
+```
+Or an object with chained field configuration:
+
+``` php
+$profile = new Profile();
+$profile->setEmail('foobarz@example.com');
+$profile->setFullName('Foo Barz');
+$company = new Company();
+$company->setContactperson($profile);
+
+$emailConfiguration = ['email' => '{{contactperson.email}}', 'name' => '{{contactperson.full_name'}}];
+$determiner = new RonRademaker\Mailer\Receiver\Determiner();
+$receiver = $determiner->getReceivers($company, null, $emailConfiguration);
+// results in ['email' => 'foobarz@example.com', 'name' => 'Foo Barz'];
+```
+NOTE: The determiner requires getters.
+
+
+Or just hardcoded settings:
+
+``` php
+$emailConfiguration = ['email' => 'foobarz@example.com', 'name' => 'Foo Barz'];
+$determiner = new RonRademaker\Mailer\Receiver\Determiner();
+$receiver = $determiner->getReceivers($object, null, $emailConfiguration);
+// results in ['email' => 'foobarz@example.com', 'name' => 'Foo Barz'];
+```
+
